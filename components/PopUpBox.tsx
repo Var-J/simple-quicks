@@ -1,26 +1,29 @@
-import React from "react";
-import { SlMagnifier } from 'react-icons/sl'
+import React, { useState } from "react";
+import MessageBox from "./Inbox/MessageBox";
+import MessagesList from "./Inbox/MessagesList";
+import ToDoList from "./Task/ToDoList";
 
 type Props = {
   button: number;
+  setButton: any;
 };
 
-function PopUpBox({ button }: Props) {
+function PopUpBox({ button, setButton }: Props) {
+    const [id, setId] = useState("")
+    const [title, setTitle] = useState("")
+
   return (
     <div
       className={`${
         button !== 0 ? "block" : "hidden"
       } h-[64%] aspect-square absolute bg-white right-10 bottom-32 rounded-md`}
     >
-      {button == 1 ? (
-        <div className="w-full p-4 px-8">
-          <div className="w-full border border-black/50 px-10 h-4 p-3 flex items-center rounded-md shadow-md">
-            <input type="text" className="w-full h-fit outline-none text-sm" placeholder="Search" />
-            <SlMagnifier className="h-4 w-4" />
-          </div>
-        </div>
+      {button == 1 && id == "" ? (
+        <MessagesList setId={setId} setTitle={setTitle} />
+      ) : button == 1 && id !== "" ? (
+        <MessageBox id={id} setId={setId} title={title} setButton={setButton}/>
       ) : (
-        <></>
+        <ToDoList />
       )}
     </div>
   );

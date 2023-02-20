@@ -6,7 +6,7 @@ function PopUp() {
     const [button, setButton] = useState(0);
   return (
     <>
-        <PopUpBox button={button}/>
+        <PopUpBox setButton={setButton} button={button}/>
         <PopUpIcon button={button} setButton={setButton}/>
     </>
   )
