@@ -2,6 +2,8 @@ import React, { FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { Comments, Posts } from "../../typing";
 import { BsArrowLeftShort, BsPlus } from "react-icons/bs";
+import moment from "moment";
+import { v4 as uuid } from 'uuid'
 
 type Props = {
   id: string;
@@ -13,6 +15,7 @@ type Props = {
 function MessageBox({ id, setId, setButton, firstPost }: Props) {
   const [data, setData] = useState<Comments[] | []>([]);
   const [input, setInput] = useState("")
+  const [more, setMore] = useState("")
 
   useEffect(() => {
     axios
@@ -21,15 +24,16 @@ function MessageBox({ id, setId, setButton, firstPost }: Props) {
       })
       .then(({ data }) => setData(data.data))
       .catch(console.error);
-  }, []);
+  }, [id]);
 
   let participants = 1
   let count = 0
-  let dummyArray = [firstPost.id]
+  let dummyArray = [firstPost.owner.id]
 
   for (let i = 0; i < data.length; i++) {
-    dummyArray.push(data[i].id)
+    dummyArray.push(data[i].owner.id)
   }
+  console.log(dummyArray)
 
   for (let i = 0; i < dummyArray.length; i++) {
     for (let j = 0; j < dummyArray.length; j++) {
@@ -52,8 +56,9 @@ function MessageBox({ id, setId, setButton, firstPost }: Props) {
     setInput("")
     const currentDate = new Date()
     const dateTime = currentDate.toISOString()
+    const uid = uuid()
     newData.push({
-        id: '1',
+        id: uid,
         message: newMessage,
         owner: {
             id: '1',
@@ -68,6 +73,14 @@ function MessageBox({ id, setId, setButton, firstPost }: Props) {
     setData(newData)
   }
 
+  const openMore = (x: string) => {
+    if (more == '' || more !== x) {
+      setMore(x)
+    } else {
+      setMore('')
+    }
+  }
+
   return (
     <div className="flex flex-col h-full w-full">
     <div className="px-4 py-2 border-b h-fit border-[#cdcdcd]">
@@ -80,7 +93,39 @@ function MessageBox({ id, setId, setButton, firstPost }: Props) {
         <BsPlus className="h-10 w-10 rotate-45 cursor-pointer" onClick={() => setButton(0)} />
       </div>
     </div>
-    <div className="px-4 w-full h-full overflow-y-scroll ">
+    <div className="px-4 w-full h-full flex flex-col-reverse overflow-y-scroll ">
+        {data.sort((a, b) => Date.parse(b.publishDate) - Date.parse(a.publishDate)).map((set, i) => (
+          <>
+            <div key={i} className={`mb-2 ${set.owner.id=='1' ? 'w-full flex flex-col items-end' : ''}`}>
+              {set.owner.id == (i < data.length - 1 ? data[i+1].owner.id : '') ? 
+              <></>
+              :
+              <h4 className={`${set.owner.id == '1' ? 'text-[#b47ce8]':'text-blue-400'} font-semibold text-sm`}>{set.owner.firstName} {set.owner.lastName}</h4>
+              }
+              <div className={`${set.owner.id == '1' ? 'flex-row-reverse space-x-reverse' : '' } flex items-start space-x-2`}>
+            <div className={`w-fit p-2 ${set.owner.id == '1' ? 'bg-[#eedcff]':'bg-blue-200'} rounded-md`}>
+                <p>{set.message}</p>
+                <p className="text-xs text-[#817b86] mt-1">{moment(set.publishDate).format('HH.MM')}</p>
+            </div>
+            <div className="flex relative">
+            <button onClick={() => openMore(set.id)} className="-my-2 text-lg font-semibold">...</button>
+            <div className={`${more == set.id ? 'block' : 'hidden'} absolute ${set.message.length > 15 ? 'left-5' : 'right-5'} w-24 text-sm `}>
+              <button className="w-full py-1 px-3 text-left border rounded-t-md text-blue-500">Edit</button>
+              <button className="w-full py-1 px-3 text-left border rounded-b-md text-red-500">Delete</button>
+            </div>
+            </div>
+            </div>
+            </div>
+            {Date.parse(set.publishDate) - (i < data.length -1 ? Date.parse(data[i+1].publishDate) : 0) > 86400 ? 
+            <div className="my-1 flex items-center space-x-8">
+              <div className="w-full h-[1px] bg-[#a7a7a7]"/>
+              <p className="whitespace-nowrap font-bold text-sm text-[#4f4f4f] ">{moment(data[i].publishDate).format("MMMM DD, YYYY")}</p>
+              <div className="w-full h-[1px] bg-[#a7a7a7]"/></div> 
+              : 
+              <></>}
+          </>
+        ))}
+         <div>
         <h4 className="mt-4 text-blue-400 font-semibold text-sm">{firstPost.owner.firstName} {firstPost.owner.lastName}</h4>
         <div className="w-1/2 h-auto relative p-2 bg-blue-200 rounded-lg mb-1">
                 <img src={firstPost.image} alt="" className="object-contain rounded-md"/>
@@ -90,15 +135,7 @@ function MessageBox({ id, setId, setButton, firstPost }: Props) {
             <p>{firstPost.text}</p>
             <p className="text-xs text-[#817b86] mt-1">{firstPost.publishDate.split("T")[1].split('Z')[0].split(":")[0]}.{firstPost.publishDate.split("T")[1].split('Z')[0].split(":")[1]}</p>
         </div>
-        {data.map((data) => (
-            <div className={`${data.id=='1' ? 'w-full flex flex-col items-end' : ''}`}>
-            <h4 className={`mt-4 ${data.id == '1' ? 'text-[#b47ce8]':'text-blue-400'} font-semibold text-sm`}>{data.owner.firstName} {data.owner.lastName}</h4>
-            <div className={`w-fit p-2 ${data.id == '1' ? 'bg-[#eedcff]':'bg-blue-200'} rounded-lg`}>
-                <p>{data.message}</p>
-                <p className="text-xs text-[#817b86] mt-1">{data.publishDate.split("T")[1].split('Z')[0].split(":")[0]}.{data.publishDate.split("T")[1].split('Z')[0].split(":")[1]}</p>
-            </div>
-            </div>
-        ))}
+        </div>
     </div>
     <form onSubmit={addMessage} className="h-fit w-full p-4 px-3">
         <div className="w-full flex items-center rounded-md shadow-sm space-x-4">

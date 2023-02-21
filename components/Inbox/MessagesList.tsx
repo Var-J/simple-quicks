@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SlMagnifier } from "react-icons/sl";
 import { AiOutlineUser } from "react-icons/ai";
 import axios from "axios";
+import moment from 'moment';
 import { Posts } from "../../typing";
 
 type Props = {
@@ -60,8 +61,9 @@ function MessagesList({ setId, setFirstPost, read, setRead }: Props) {
           <SlMagnifier className="h-4 w-4" />
         </div>
       </div>
-      {data.map((data) => (
+      {data.map((data, i) => (
         <div
+          key={i}
           onClick={() => openMessage(data.id, data)}
           className="w-full h-24 relative px-8 py-2 flex space-x-8 hover:bg-black/20 cursor-pointer"
         >
@@ -78,7 +80,7 @@ function MessagesList({ setId, setFirstPost, read, setRead }: Props) {
               <h3 className="text-[#2f80ed] font-semibold">
                 {data.owner.firstName} {data.owner.lastName}
               </h3>
-              <p className="text-xs">{data.publishDate.split("T")[0]} {data.publishDate.split("T")[1].split('Z')[0].split(":")[0]}:{data.publishDate.split("T")[1].split('Z')[0].split(":")[1]}</p>
+              <p className="text-xs">{moment(data.publishDate).format('MM-DD-YYYY HH:MM')}</p>
             </div>
             <h4 className="font-semibold text-sm">{data.owner.firstName} {data.owner.lastName}</h4>
             <div className="flex w-full items-center justify-between">
