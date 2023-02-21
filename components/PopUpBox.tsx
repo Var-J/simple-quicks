@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Posts } from "../typing";
 import MessageBox from "./Inbox/MessageBox";
 import MessagesList from "./Inbox/MessagesList";
 import ToDoList from "./Task/ToDoList";
@@ -10,7 +11,8 @@ type Props = {
 
 function PopUpBox({ button, setButton }: Props) {
     const [id, setId] = useState("")
-    const [title, setTitle] = useState("")
+    const [firstPost, setFirstPost] = useState()
+    const [read, setRead] = useState([])
 
   return (
     <div
@@ -19,9 +21,9 @@ function PopUpBox({ button, setButton }: Props) {
       } h-[64%] aspect-square absolute bg-white right-10 bottom-32 rounded-md`}
     >
       {button == 1 && id == "" ? (
-        <MessagesList setId={setId} setTitle={setTitle} />
+        <MessagesList setId={setId} setFirstPost={setFirstPost} read={read} setRead={setRead}/>
       ) : button == 1 && id !== "" ? (
-        <MessageBox id={id} setId={setId} title={title} setButton={setButton}/>
+        <MessageBox id={id} setId={setId} firstPost={firstPost!} setButton={setButton}/>
       ) : (
         <ToDoList />
       )}

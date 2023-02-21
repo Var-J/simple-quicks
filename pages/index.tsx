@@ -4,8 +4,6 @@ import PopUp from '../components/PopUp'
 import SearchBar from '../components/SearchBar'
 
 export default function Home() {
-
-  console.log(process.env.NEXT_PUBLIC_DUMMYAPI_APP_ID)
   return (
     <>
       <Head>

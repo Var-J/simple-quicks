@@ -6,10 +6,12 @@ import { Posts } from "../../typing";
 
 type Props = {
   setId: any;
-  setTitle: any;
+  setFirstPost: any;
+  read: any;
+  setRead: any;
 };
 
-function MessagesList({ setId, setTitle }: Props) {
+function MessagesList({ setId, setFirstPost, read, setRead }: Props) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<Posts[] | []>([]);
 
@@ -24,12 +26,13 @@ function MessagesList({ setId, setTitle }: Props) {
       .finally(() => setLoading(false));
   }, []);
 
-  const openMessage = (id: string, firstname: string, lastName: string) => {
+  const openMessage = (id: string, data: Posts) => {
+    const dummyRead = [id, ...read]
     setId(id)
-    const title = firstname + " " + lastName
-    console.log(title)
-    setTitle(title)
+    setFirstPost(data)
+    setRead(dummyRead)
   }
+  console.log(read)
 
   if (loading) {
     return (
@@ -59,7 +62,7 @@ function MessagesList({ setId, setTitle }: Props) {
       </div>
       {data.map((data) => (
         <div
-          onClick={() => openMessage(data.id, data.owner.firstName, data.owner.lastName)}
+          onClick={() => openMessage(data.id, data)}
           className="w-full h-24 relative px-8 py-2 flex space-x-8 hover:bg-black/20 cursor-pointer"
         >
           <div className="relative">
@@ -75,12 +78,12 @@ function MessagesList({ setId, setTitle }: Props) {
               <h3 className="text-[#2f80ed] font-semibold">
                 {data.owner.firstName} {data.owner.lastName}
               </h3>
-              <p className="text-xs">{data.publishDate}</p>
+              <p className="text-xs">{data.publishDate.split("T")[0]} {data.publishDate.split("T")[1].split('Z')[0].split(":")[0]}:{data.publishDate.split("T")[1].split('Z')[0].split(":")[1]}</p>
             </div>
             <h4 className="font-semibold text-sm">{data.owner.firstName} {data.owner.lastName}</h4>
             <div className="flex w-full items-center justify-between">
               <p className="text-sm text-[#4f4f4f]">{data.text}</p>
-              <div className="h-2 w-2 bg-red-500 rounded-full"></div>
+              <div className={`h-2 w-2 ${read.includes(data.id) ? 'bg-transparent' : 'bg-red-500'} rounded-full`}></div>
             </div>
           </div>
         </div>
