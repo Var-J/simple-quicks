@@ -21,9 +21,9 @@ function PopUpBox({ button, setButton }: Props) {
       } h-[64%] aspect-square absolute bg-white right-10 bottom-32 rounded-md`}
     >
       {button == 1 && id == "" ? (
-        <MessagesList setId={setId} setFirstPost={setFirstPost} read={read} setRead={setRead}/>
+        <MessagesList setId={setId} setFirstPost={setFirstPost} read={read}/>
       ) : button == 1 && id !== "" ? (
-        <MessageBox id={id} setId={setId} firstPost={firstPost!} setButton={setButton}/>
+        <MessageBox id={id} setId={setId} firstPost={firstPost!} read={read} setRead={setRead} setButton={setButton}/>
       ) : (
         <ToDoList />
       )}

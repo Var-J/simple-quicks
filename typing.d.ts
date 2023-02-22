@@ -11,7 +11,7 @@ export interface Posts {
   image: string;
   likes: number;
   owner: User;
-  publishDate: "2020-05-24T14:53:17.598Z";
+  publishDate: string;
   tags: string[];
   text: string;
 }
