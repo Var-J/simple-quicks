@@ -222,10 +222,10 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                         ...
                       </button>
                       <div
-                        className={`${
+                        className={`bg-white ${
                           more == set.id ? "block" : "hidden"
                         } absolute ${
-                          set.message.length > 15 ? "left-5" : "right-5"
+                          set.message.length < 15 && setId == '1' ? "right-5" : "left-5" 
                         } w-24 text-sm `}
                       >
                         <button className="w-full py-1 px-3 text-left border rounded-t-md text-blue-500">
@@ -240,7 +240,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                 </div>
                 {i == 0 && read.includes(firstPost.id) == false ? (
                   <>
-                    <div id="new-message" className="my-1 flex items-center space-x-4" ref={ref}>
+                    <div key={i} id="new-message" className="my-1 flex items-center space-x-4" ref={ref}>
                       <div className="w-full h-[1px] bg-[#f08181]" />
                       <p className="whitespace-nowrap font-bold text-sm text-[#eb5757] ">
                         New Message

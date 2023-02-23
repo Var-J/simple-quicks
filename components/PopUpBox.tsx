@@ -24,9 +24,9 @@ function PopUpBox({ button, setButton }: Props) {
         <MessagesList setId={setId} setFirstPost={setFirstPost} read={read}/>
       ) : button == 1 && id !== "" ? (
         <MessageBox id={id} setId={setId} firstPost={firstPost!} read={read} setRead={setRead} setButton={setButton}/>
-      ) : (
+      ) : button == 2 ? (
         <ToDoList />
-      )}
+      ) : <></>}
     </div>
   );
 }
