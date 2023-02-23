@@ -30,3 +30,10 @@ export interface Comments {
   post: string;
   publishDate: string;
 }
+
+export interface ToDo {
+  completed: boolean;
+  id: string;
+  title: string;
+  userId: string;
+}
