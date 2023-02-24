@@ -1,12 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import React, {
-  FormEvent,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import React, { FormEvent, useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Comments, Posts } from "../../typing";
+import { Comments, Posts, Reply } from "../../typing";
 import { BsArrowLeftShort, BsPlus } from "react-icons/bs";
 import moment from "moment";
 import { v4 as uuid } from "uuid";
@@ -30,7 +25,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
     /* Optional options */
     threshold: 0,
   });
-
+  const [reply, setReply] = useState({ name: "", message: "" });
 
   useEffect(() => {
     axios
@@ -41,6 +36,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
       .catch(console.error);
   }, [id]);
 
+
   let participants = 1;
   let count = 0;
   let dummyArray = [firstPost.owner.id];
@@ -49,6 +45,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
     dummyArray.push(data[i].owner.id);
   }
 
+  const colorArray: number[] = [];
   for (let i = 0; i < dummyArray.length; i++) {
     for (let j = 0; j < dummyArray.length; j++) {
       if (dummyArray[i] == "1") {
@@ -56,6 +53,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
         count += 1;
       }
       if (count == dummyArray.length - 1) {
+        colorArray.push(participants);
         participants += 1;
         count = 0;
       }
@@ -68,6 +66,8 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
     e.preventDefault();
     const newMessage = input;
     setInput("");
+    const newReply = reply.message;
+    setReply({name: '', message: ''})
     const currentDate = new Date();
     const dateTime = currentDate.toISOString();
     const uid = uuid();
@@ -83,6 +83,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
       },
       post: firstPost.id,
       publishDate: dateTime,
+      reply: newReply
     });
     setData(newData);
   };
@@ -99,6 +100,15 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
     const dummyRead = [firstPost.id, ...read];
     setId(id);
     setRead(dummyRead);
+  };
+
+  const replyMessage = (
+    firstName: string,
+    lastName: string,
+    message: string
+  ) => {
+    setMore("");
+    setReply({ name: firstName + " " + lastName, message: message });
   };
 
   return (
@@ -170,21 +180,30 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                       className={`${
                         set.owner.id == "1"
                           ? "text-[#b47ce8]"
-                          : i == 1
+                          : colorArray[i] == 1
                           ? "text-blue-500"
-                          : i == 2
+                          : colorArray[i] == 2
                           ? "text-green-500"
-                          : i == 3
+                          : colorArray[i] == 3
                           ? "text-purple-500"
-                          : i == 4
+                          : colorArray[i] == 4
                           ? "text-red-500"
-                          : i == 5
+                          : colorArray[i] == 5
                           ? "text-yellow-500"
                           : "text-cyan-500"
                       } font-semibold text-sm`}
                     >
                       {set.owner.firstName} {set.owner.lastName}
                     </h4>
+                  )}{" "}
+                  {set.owner.id == "1" && (
+                    <div
+                      className={`bg-[#f2f2f2] w-fit p-1 text-sm h-fit ${
+                        reply ? "block" : "hidden"
+                      }`}
+                    >
+                      {set.reply}
+                    </div>
                   )}
                   <div
                     className={`${
@@ -196,16 +215,16 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                     <div
                       className={`w-fit p-2 ${
                         set.owner.id == "1"
-                          ? "bg-[#eedcff]"
-                          : i == 1
+                          ? "bg-[#b47ce8]"
+                          : colorArray[i] == 1
                           ? "bg-blue-200"
-                          : i == 2
+                          : colorArray[i] == 2
                           ? "bg-green-200"
-                          : i == 3
+                          : colorArray[i] == 3
                           ? "bg-purple-200"
-                          : i == 4
+                          : colorArray[i] == 4
                           ? "bg-red-200"
-                          : i == 5
+                          : colorArray[i] == 5
                           ? "bg-yellow-200"
                           : "bg-cyan-200"
                       } rounded-md`}
@@ -222,26 +241,61 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                       >
                         ...
                       </button>
-                      <div
-                        className={`bg-white ${
-                          more == set.id ? "block" : "hidden"
-                        } absolute ${
-                          set.message.length < 15 && setId == '1' ? "right-5" : "left-5" 
-                        } w-24 text-sm `}
-                      >
-                        <button className="w-full py-1 px-3 text-left border rounded-t-md text-blue-500">
-                          Edit
-                        </button>
-                        <button className="w-full py-1 px-3 text-left border rounded-b-md text-red-500">
-                          Delete
-                        </button>
-                      </div>
+                      {set.owner.id == "1" ? (
+                        <div
+                          className={`bg-white absolute ${
+                            more == set.id ? "block" : "hidden"
+                          } ${
+                            set.message.length < 15 && set.owner.id == "1"
+                              ? "right-5"
+                              : "left-5"
+                          } w-24 text-sm `}
+                        >
+                          <button className="w-full py-1 px-3 text-left border rounded-t-md text-blue-500">
+                            Edit
+                          </button>
+                          <button className="w-full py-1 px-3 text-left border rounded-b-md text-red-500">
+                            Delete
+                          </button>
+                        </div>
+                      ) : (
+                        <div
+                          className={`bg-white absolute ${
+                            more == set.id ? "block" : "hidden"
+                          } ${
+                            set.message.length < 15 && set.owner.id == "1"
+                              ? "right-5"
+                              : "left-5"
+                          } w-24 text-sm `}
+                        >
+                          <button className="w-full py-1 px-3 text-left border rounded-t-md text-blue-500">
+                            Share
+                          </button>
+                          <button
+                            onClick={() =>
+                              replyMessage(
+                                set.owner.firstName,
+                                set.owner.lastName,
+                                set.message
+                              )
+                            }
+                            className="w-full py-1 px-3 text-left border rounded-b-md text-blue-500"
+                          >
+                            Reply
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 {i == 0 && read.includes(firstPost.id) == false ? (
                   <>
-                    <div key={i} id="new-message" className="my-1 flex items-center space-x-4" ref={ref}>
+                    <div
+                      key={i}
+                      id="new-message"
+                      className="my-1 flex items-center space-x-4"
+                      ref={ref}
+                    >
                       <div className="w-full h-[1px] bg-[#f08181]" />
                       <p className="whitespace-nowrap font-bold text-sm text-[#eb5757] ">
                         New Message
@@ -249,7 +303,10 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                       <div className="w-full h-[1px] bg-[#f08181]" />
                     </div>
                     {!inView && (
-                      <Link href="#new-message"  className="absolute bottom-16 mx-auto w-fit left-0 right-0 text-center">
+                      <Link
+                        href="#new-message"
+                        className="absolute bottom-16 mx-auto w-fit left-0 right-0 text-center"
+                      >
                         <p className="px-3 py-1 bg-[#e9f3ff] text-[#2f80ed] rounded-md font-semibold">
                           New Message
                         </p>
@@ -285,7 +342,21 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
           </div>
         </div>
       )}
-      <form onSubmit={addMessage} className="h-fit w-full p-2 px-4">
+      <form onSubmit={addMessage} className="relative h-fit w-full px-4">
+        {reply.name !== "" && reply.message !== "" ? (
+          <div className="absolute w-[468px] h-fit bottom-10 bg-[#f2f2f2] p-2 border-black border ">
+            <div
+              className="absolute right-2 top-1"
+              onClick={() => setReply({ name: "", message: "" })}
+            >
+              X
+            </div>
+            <h4 className="font-semibold text-sm">Replying to {reply.name}</h4>
+            <p className="text-sm">{reply.message}</p>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="w-full flex items-center rounded-md shadow-sm space-x-4">
           <input
             type="text"
@@ -308,4 +379,3 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
 }
 
 export default MessageBox;
-

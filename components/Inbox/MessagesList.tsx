@@ -56,7 +56,7 @@ function MessagesList({ setId, setFirstPost, read }: Props) {
         <div className="w-full border border-black/50 px-10 h-4 p-3 flex items-center rounded-md shadow-sm ">
           <input
             type="text"
-            className="w-full h-fit outline-none text-sm"
+            className="w-full h-6 form-input focus:ring-0 text-sm border-none"
             placeholder="Search"
           />
           <SlMagnifier className="h-4 w-4" />

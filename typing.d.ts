@@ -29,6 +29,7 @@ export interface Comments {
   owner: User;
   post: string;
   publishDate: string;
+  reply: string;
 }
 
 export interface ToDo {
@@ -36,4 +37,9 @@ export interface ToDo {
   id: string;
   title: string;
   userId: string;
+}
+
+export interface Reply {
+  name: string;
+  message: string;
 }
