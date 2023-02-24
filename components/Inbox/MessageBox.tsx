@@ -30,7 +30,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
   useEffect(() => {
     axios
       .get(`https://dummyapi.io/data/v1/post/${id}/comment?limit=10`, {
-        headers: { "app-id": process.env.NEXT_PUBLIC_DUMMYAPI_APP_ID },
+        headers: { "app-id": '63f2ca8becf41e73e390db49' },
       })
       .then(({ data }) => setData(data.data))
       .catch(console.error);
