@@ -37,6 +37,7 @@ export interface ToDo {
   id: string;
   title: string;
   userId: string;
+  tag: string[];
 }
 
 export interface Reply {

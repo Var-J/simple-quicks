@@ -36,7 +36,6 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
       .catch(console.error);
   }, [id]);
 
-
   let participants = 1;
   let count = 0;
   let dummyArray = [firstPost.owner.id];
@@ -67,7 +66,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
     const newMessage = input;
     setInput("");
     const newReply = reply.message;
-    setReply({name: '', message: ''})
+    setReply({ name: "", message: "" });
     const currentDate = new Date();
     const dateTime = currentDate.toISOString();
     const uid = uuid();
@@ -83,7 +82,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
       },
       post: firstPost.id,
       publishDate: dateTime,
-      reply: newReply
+      reply: newReply,
     });
     setData(newData);
   };
@@ -123,7 +122,7 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
             <h1 className="text-[#2f80ed] font-semibold">
               {firstPost.owner.firstName} {firstPost.owner.lastName}
             </h1>
-            <h3 className="text-sm text-[#4f4f4f]">
+            <h3 className="text-sm font-lato text-[#4f4f4f]">
               {participants} participants
             </h3>
           </div>
@@ -181,15 +180,15 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                         set.owner.id == "1"
                           ? "text-[#b47ce8]"
                           : colorArray[i] == 1
-                          ? "text-blue-500"
+                          ? "text-[#E5A443]"
                           : colorArray[i] == 2
-                          ? "text-green-500"
+                          ? "text-[#9B51E0]"
                           : colorArray[i] == 3
-                          ? "text-purple-500"
+                          ? "text-[#43B78D]"
                           : colorArray[i] == 4
                           ? "text-red-500"
                           : colorArray[i] == 5
-                          ? "text-yellow-500"
+                          ? "text-gray-500"
                           : "text-cyan-500"
                       } font-semibold text-sm`}
                     >
@@ -217,15 +216,15 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
                         set.owner.id == "1"
                           ? "bg-[#b47ce8]"
                           : colorArray[i] == 1
-                          ? "bg-blue-200"
+                          ? "bg-[#FCEED3]"
                           : colorArray[i] == 2
-                          ? "bg-green-200"
+                          ? "bg-[#EEDCFF]"
                           : colorArray[i] == 3
-                          ? "bg-purple-200"
+                          ? "bg-[#D2F2EA]"
                           : colorArray[i] == 4
                           ? "bg-red-200"
                           : colorArray[i] == 5
-                          ? "bg-yellow-200"
+                          ? "bg-gray-200"
                           : "bg-cyan-200"
                       } rounded-md`}
                     >
@@ -344,12 +343,23 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
       )}
       <form onSubmit={addMessage} className="relative h-fit w-full px-4">
         {reply.name !== "" && reply.message !== "" ? (
-          <div className="absolute w-[468px] h-fit bottom-10 bg-[#f2f2f2] p-2 border-black border ">
+          <div className="absolute w-[84%] h-fit bottom-10 bg-[#f2f2f2] p-2 border-black border ">
             <div
               className="absolute right-2 top-1"
               onClick={() => setReply({ name: "", message: "" })}
             >
-              X
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 21 21"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21 2.115L18.885 0L10.5 8.385L2.115 0L0 2.115L8.385 10.5L0 18.885L2.115 21L10.5 12.615L18.885 21L21 18.885L12.615 10.5L21 2.115Z"
+                  fill="black"
+                />
+              </svg>
             </div>
             <h4 className="font-semibold text-sm">Replying to {reply.name}</h4>
             <p className="text-sm">{reply.message}</p>
@@ -362,13 +372,13 @@ function MessageBox({ id, setId, setButton, firstPost, read, setRead }: Props) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="w-full h-full py-2 px-4 outline-none rounded-md border border-[#a1a1a1] placeholder:text-[#4c4c4c]"
+            className="w-full h-full py-2 px-4 outline-none rounded-md border border-[#828282] placeholder:text-[#828282]"
             placeholder="Type a new message"
           />
           <button
             type="submit"
             disabled={!input}
-            className="px-4 py-2 bg-[#2f80ed] text-white font-semibold rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-[16px] py-[8px] bg-[#2f80ed] text-white font-semibold rounded-[5px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Send
           </button>

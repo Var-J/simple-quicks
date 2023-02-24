@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Posts } from "../typing";
 import MessageBox from "./Inbox/MessageBox";
 import MessagesList from "./Inbox/MessagesList";
 import ToDoList from "./Task/ToDoList";
+import { motion } from 'framer-motion'
 
 type Props = {
   button: number;
@@ -15,10 +15,12 @@ function PopUpBox({ button, setButton }: Props) {
     const [read, setRead] = useState([])
 
   return (
-    <div
+    <motion.div
+      initial={{scale:0, x: 400, y: 400}}
+      whileInView={{scale: 1, x: 0, y: 0}}
       className={`${
         button !== 0 ? "block" : "hidden"
-      } h-[64%] aspect-square absolute bg-white right-10 bottom-32 rounded-md`}
+      } w-[734px] h-[737px] aspect-square absolute bg-white right-10 bottom-32 rounded-md`}
     >
       {button == 1 && id == "" ? (
         <MessagesList setId={setId} setFirstPost={setFirstPost} read={read}/>
@@ -27,7 +29,7 @@ function PopUpBox({ button, setButton }: Props) {
       ) : button == 2 ? (
         <ToDoList />
       ) : <></>}
-    </div>
+    </motion.div>
   );
 }
 
